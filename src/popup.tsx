@@ -2,103 +2,129 @@ import React, { useState, useEffect } from 'react';
 import { Card, Typography, Button, Popover, Cascader } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBilibili, faTiktok, faWeixin } from '@fortawesome/free-brands-svg-icons';
-import { cascaderData } from '~contents/content-core';
+import { cascaderData } from '~utils/common';
+import type { FolderItem, CascaderOption } from '~types';
+import { STORAGE_KEYS, SOCIAL_LINKS, IMAGE_URLS } from '~constants';
 
 const { Paragraph } = Typography;
 
-
 const AboutPageContent = () => {
-  const popoverContent = {
-    github: "三此君 GitHub",
-    bilibili: <img src="https://img2023.cnblogs.com/blog/2740513/202305/2740513-20230530083651756-1915761883.jpg" alt="视频B站首发" style={{ width: '150px', height: '150px' }} />,
-    tiktok: <img src="https://img2023.cnblogs.com/blog/2740513/202305/2740513-20230529203236662-1716684994.jpg" alt="抖音" style={{ width: '150px', height: '150px' }} />,
-    gzh: <img src="https://img2023.cnblogs.com/blog/2740513/202305/2740513-20230529203219168-2117666216.jpg" alt="公众号" style={{ width: '150px', height: '150px' }} />,
-    wechat: <img src="https://img2023.cnblogs.com/blog/2740513/202305/2740513-20230529203303815-1142190090.jpg" alt="微信号" style={{ width: '150px', height: '150px' }} />,
+  const AboutPageContent = {
+    bilibili: <img src={IMAGE_URLS.BILIBILI_QR} alt="视频B站首发" style={{ width: '150px', height: '150px' }} />,
+    tiktok: <img src={IMAGE_URLS.TIKTOK_QR} alt="抖音" style={{ width: '150px', height: '150px' }} />,
+    gzh: <img src={IMAGE_URLS.WECHAT_GZH_QR} alt="公众号" style={{ width: '150px', height: '150px' }} />,
+    wechat: <img src={IMAGE_URLS.WECHAT_QR} alt="微信号" style={{ width: '150px', height: '150px' }} />,
   };
 
-  const openLink = (url) => {
+  const openLink = (url: string) => {
     chrome.tabs.create({ url });
   };
 
   return (
-    <div style={{ padding: '10px', width: '350px' }}>
-      <Paragraph style={{ fontSize: '15px', padding: '5px' }}>
-        感谢支持！
-        <br />
-        如果觉得本工具不错，请分享给你的朋友！
-        <br />
-        有任何问题也可以私信三此君，交个朋友。
-      </Paragraph>
+    <div style={{ padding: '20px' }}>
+      <Card title="飞书文档助手" style={{ marginBottom: '20px' }}>
+        <Paragraph>
+          飞书文档助手是一款浏览器插件，旨在增强飞书云文档的使用体验。
+        </Paragraph>
+        <Paragraph>
+          <strong>主要功能：</strong>
+        </Paragraph>
+        <ul>
+          <li>批量导出文档：支持选择文件夹批量导出文档为 docx、xlsx 等格式</li>
+          <li>文档漫游：随机跳转到文档库中的任意文档，帮助发现被遗忘的内容</li>
+        </ul>
+      </Card>
 
-      <div style={{ display: 'flex' }}>
-        <Button onClick={() => openLink("https://github.com/sancijun/feishu-doc-helper#readme")} style={{ marginRight: '8px', marginLeft: '5px' }}>
-          使用说明
-        </Button>
-        <Button type="primary" ghost onClick={() => openLink("https://github.com/sancijun/feishu-doc-helper/issues/new?assignees=&labels=enhancement&projects=&template=---feature.md&title=%5BFeature%5D+")} style={{ marginRight: '8px' }}>
-          功能建议
-        </Button>
-        <Button danger onClick={() => openLink("https://github.com/sancijun/feishu-doc-helper/issues/new?assignees=&labels=&projects=&template=---bug.md&title=%5BBug%5D+")}>
-          缺陷反馈
-        </Button>
-      </div>
+      <Card title="使用说明" style={{ marginBottom: '20px' }}>
+        <Paragraph>
+          1. 在飞书云空间页面，插件会自动加载您的文档列表
+        </Paragraph>
+        <Paragraph>
+          2. 使用"批量导出"功能选择要导出的文件夹
+        </Paragraph>
+        <Paragraph>
+          3. 使用"文档漫游"功能随机浏览文档
+        </Paragraph>
+        <Paragraph>
+          4. 在设置页面可以配置漫游时要排除的文件夹
+        </Paragraph>
+      </Card>
 
-      <div style={{ display: 'flex', marginTop: '12px' }}>
-        <Popover content={popoverContent.wechat} title="三此君微信号">
-          <Button type="text" style={{ padding: '5px', fontSize: '13px' }}>
-            联系作者：微信
+      <Card title="功能建议 & 缺陷反馈" style={{ marginBottom: '20px' }}>
+        <Button type="link" onClick={() => openLink(SOCIAL_LINKS.GITHUB_ISSUES)}>
+          GitHub Issues
+        </Button>
+      </Card>
+
+      <Card title="关于作者">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <Popover content="微信：sancijun" title="微信">
+            <FontAwesomeIcon icon={faWeixin} size="2x" style={{ color: '#07C160', cursor: 'pointer' }} />
+          </Popover>
+          <FontAwesomeIcon 
+            icon={faBilibili} 
+            size="2x" 
+            style={{ color: '#FB7299', cursor: 'pointer' }} 
+            onClick={() => openLink(SOCIAL_LINKS.BILIBILI)}
+          />
+          <FontAwesomeIcon 
+            icon={faTiktok} 
+            size="2x" 
+            style={{ color: '#000000', cursor: 'pointer' }} 
+            onClick={() => openLink(SOCIAL_LINKS.DOUYIN)}
+          />
+          <Button type="link" onClick={() => openLink(SOCIAL_LINKS.WECHAT_MP)}>
+            公众号：三此君
           </Button>
-        </Popover>
-        <Popover content={popoverContent.bilibili} title="视频在B站首发">
-          <Button type="text" icon={<FontAwesomeIcon icon={faBilibili} />} onClick={() => openLink("https://space.bilibili.com/96271327/")} style={{ padding: '5px', fontSize: '13px' }}>
-            B站
-          </Button>
-        </Popover>
-        <Popover content={popoverContent.tiktok} title="三此君抖音号">
-          <Button type="text" icon={<FontAwesomeIcon icon={faTiktok} />} onClick={() => openLink("https://v.douyin.com/UuXokgA/")} style={{ padding: '5px', fontSize: '13px' }}>
-            抖音
-          </Button>
-        </Popover>
-        <Popover content={popoverContent.gzh} title="三此君公众号">
-          <Button type="text" icon={<FontAwesomeIcon icon={faWeixin} />} style={{ padding: '5px', fontSize: '13px' }}>
-            公众号
-          </Button>
-        </Popover>
-      </div>
+        </div>
+      </Card>
     </div>
   );
 }
 
 
 function SettingsPageContent() {
-
-  const [cascaderOptions, setCascaderOptions] = useState();
-  const [selectedValue, setSelectedValue] = useState([]);
+  const [cascaderOptions, setCascaderOptions] = useState<CascaderOption[]>([]);
+  const [selectedValue, setSelectedValue] = useState<string[][]>([]);
 
   useEffect(() => {
     chrome.storage.local.get(
-      ["feishuFolderList", "roamExcludeFolder"],
+      [STORAGE_KEYS.FEISHU_FOLDER_LIST, STORAGE_KEYS.ROAM_EXCLUDE_FOLDER],
       (result) => {
-        const { feishuFolderList, roamExcludeFolder } = result;
-        setCascaderOptions(cascaderData(feishuFolderList))
-        setSelectedValue(roamExcludeFolder)
+        const { [STORAGE_KEYS.FEISHU_FOLDER_LIST]: feishuFolderList, [STORAGE_KEYS.ROAM_EXCLUDE_FOLDER]: roamExcludeFolder } = result;
+        if (feishuFolderList) {
+          setCascaderOptions(cascaderData(feishuFolderList))
+        }
+        setSelectedValue(roamExcludeFolder || [])
       }
     );
   }, []);
 
-  const handleCascaderChange = (value, selectedOptions) => {
+  const handleCascaderChange = (value: any) => {
     setSelectedValue(value);
-    chrome.storage.local.set({ 'roamExcludeFolder': value });
-    console.log('roamExcludeFolder', value)
+    chrome.storage.local.set({ [STORAGE_KEYS.ROAM_EXCLUDE_FOLDER]: value });
   };
 
   return (
-    <>
-      <Paragraph style={{ fontSize: '15px', padding: '5px' }}>
-        选择文档漫游需要排除的目录，文档漫游时，选中目录下的文档将不会被打开。
-      </Paragraph>
-      <Cascader options={cascaderOptions} multiple onChange={handleCascaderChange} placeholder="选择文档漫游需要排除的目录" value={selectedValue} style={{ width: '100%', marginTop: '10px', marginBottom: '20px' }} />
-    </>
-
+    <div style={{ padding: '20px' }}>
+      <Card title="文档漫游设置">
+        <div style={{ marginBottom: '15px' }}>
+          <strong>排除目录：</strong>
+        </div>
+        <Cascader
+          options={cascaderOptions}
+          onChange={handleCascaderChange}
+          value={selectedValue}
+          multiple
+          placeholder="选择要排除的目录"
+          style={{ width: '100%' }}
+          showSearch
+        />
+        <div style={{ marginTop: '10px', color: '#666', fontSize: '12px' }}>
+          选择的目录将不会在文档漫游中出现
+        </div>
+      </Card>
+    </div>
   );
 }
 
@@ -126,19 +152,19 @@ const PopupPage: React.FC = () => {
   };
 
   return (
-    <Card
-      style={{ width: '350px' }}
-      tabList={tabList.map(tab => ({
-        ...tab,
-        key: tab.key,
-        tab: <div style={{ width: '125px', display: 'flex', justifyContent: 'center' }}>{tab.tab}</div>, // 设置标签宽度
-      }))}
-      activeTabKey={activeTabKey}
-      onTabChange={onTabChange}
-    >
-      {contentList[activeTabKey]}
-
-    </Card>
+    <div style={{ width: '400px', height: '500px' }}>
+      <Card
+        style={{ width: '100%', height: '100%' }}
+        tabList={tabList}
+        activeTabKey={activeTabKey}
+        onTabChange={onTabChange}
+        tabProps={{
+          size: 'middle',
+        }}
+      >
+        {contentList[activeTabKey]}
+      </Card>
+    </div>
   );
 };
 
